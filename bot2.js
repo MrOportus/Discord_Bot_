@@ -1,48 +1,51 @@
+require("dotenv").config();
 let Discord = require("discord.js");
 const { send } = require("process");
-//const client = new Discord.Client();
+
 
 // 1era forma de conectarme al discord all intentos
 //const allIntents = new Discord.Intents();
 //const client = new Discord.Client({ intents: allIntents });
+
 const intents = new Discord.Intents(32767);
 const client = new Discord.Client({ intents });
 
 
-require("dotenv").config();
-
-
-
+const prefix = '+';
 console.log(process.env.TOKEN);
-
-/*client.on('ready', () =>{
-  console.log("Ready!");
-  
- 
-
-});*/
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
+client.on('ready', client => {
+  let n=0;
+  while(n < 3){
+  client.channels.cache.get('874168312320364609').send(n + 'Bot iniciado!');
+  n=n+1;  
+  }
+  console.log (prefix);
+})
+
 client.on('messageCreate', async (message)  => {
   //ping
-    let prefix = ".";
+ 
     if(message.channel.type === 'dm') return;
     if(message.author.bot) return;
-    if(message.content.startsWith(prefix)) return;
+    if(message.content.startsWith(process.env.PREFIX)) return;
+
 
     const args = message.content.slice(prefix.length).trim().split(/ +/g);
     const command = args.shift().toLowerCase()
 
-    if(command === 'ping'){
-      message.channel.send("pong");
-      }
-    if(command === 'responde'){
-      message.reply("hola");
+    if(message.content.startsWith(prefix + 'pepe')) {
+      message.channel.send(`pepe-pong 🏓!!`);
+    }else
+    if(message.content.startsWith(prefix + 'aa')){
+      message.channel.send(`brrr🏓!!`);
     }
- 
+   
+
 });
 
 
