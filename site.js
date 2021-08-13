@@ -1,6 +1,8 @@
 const request = require('request');
 
-const urlList = ["https://www.google.comm", "https://www.amazon.com"];
+//const urlList = ["https://www.google.comm", "https://www.amazon.com"];
+
+const urlList = [""];
 
 function getStatus(url) {
     return new Promise((resolve, reject) => {
@@ -10,8 +12,13 @@ function getStatus(url) {
     })   
 }
 
+
 let promiseList = urlList.map(url => getStatus(url));
 
-Promise.all(promiseList).then(resultList => {
-    resultList.forEach(result => console.log("Result: ", result));
-});
+
+// Promise.all(promiseList).then(resultList => {
+//     resultList.forEach(result => console.log("Result: ", result));
+    
+// }); 
+
+module.exports={getStatus};

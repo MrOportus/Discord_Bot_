@@ -1,38 +1,50 @@
-let Discord = require("discord.js");
-const { send } = require("process");
-//const client = new Discord.Client();
-
-const allIntents = new Discord.Intents();
-const client = new Discord.Client({ intents: allIntents });
-
 require("dotenv").config();
+const request = require('request');
+const {getStatus} = require('./site.js');
+const Discord = require("discord.js");
+const { send } = require("process");
+const { url } = require("inspector");
+const {PREFIX, TOKEN} = process.env;
+const intents = new Discord.Intents(32767);
+const client = new Discord.Client({ intents });
 
-
-
-console.log(process.env.TOKEN);
-
-const prefix = "!";
-
-client.on("message", function(message) {
-  if (message.author.bot) return;
-  if (!message.content.startsWith(prefix)) return;
-
-  const commandBody = message.content.slice(prefix.length);
-  const args = commandBody.split(' ');
-  const command = args.shift().toLowerCase();
-
-  if (command === "ping") {
-    const timeTaken = Date.now() - message.createdTimestamp;
-    message.channel.send("pong");
-    message.reply(`Pong! This message had a latency of ${timeTaken}ms.`);
-  }
-
-  else if (command === "sum") {
-    const numArgs = args.map(x => parseFloat(x));
-    const sum = numArgs.reduce((counter, x) => counter += x);
-    message.reply(`The sum of all the arguments you provided is ${sum}!`);
-  }
+client.on('ready', () => {
+  console.log('Iniciando Bot : ' +client.user.tag);
 });
-      
-    
-    client.login(process.env.TOKEN);
+
+client.on('ready', client => {
+  client.channels.cache.get('874168312320364609').send(' ========   Bot iniciado!  ======== ');
+  console.log ("Iniciado con prefix: " + PREFIX);
+});
+
+client.on('messageCreate', async (message)  => {
+    if(message.channel.type === 'dm') return;
+    if(message.author.bot) return;
+    if(message.content.startsWith(PREFIX + 'system')) {
+      message.channel.send(`este es el sistema 1 🏓!!`);
+    } else if(message.content.startsWith(PREFIX + 'hola')){
+      console.log(PREFIX + ' -- Responde -- hola---');
+      message.channel.send('Hola ! **' +message.author.username+ '** ¿Como estas?');
+    } else if(message.content.startsWith(PREFIX + 'google')){
+      const urls = "https://www.googleee.com";
+     
+    try {
+      var result = await getStatus(urls);
+      console.log(result);
+      message.channel.send("Servicio: "+result.site + "\nEstado :  " +result.status);
+    } catch (error) {
+      console.log('error en url.');
+    }  
+    } else if(message.content.startsWith(PREFIX + 'help')){
+
+      message.channel.send('**'+message.author.username+'**, Revisa tus mensajes privados.');
+      message.author.send('**COMANDOS**\n```\n'+
+                          '-> '+PREFIX+'ping           :: el bot responde Pong. comprueba conexión.\n'+
+                          '-> '+PREFIX+'hola           :: Retorna un saludo como mensaje.\n '+
+                          '-> '+PREFIX+'google         :: responde status de web google.\n');                        
+    } else if (message.content.startsWith(PREFIX + 'ping')){
+      message.channel.send(":ping_pong: Pong!")   
+    };
+});
+
+client.login(TOKEN);
